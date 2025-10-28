@@ -1,20 +1,17 @@
-# app/core/config.py
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 
 class Settings(BaseSettings):
-    # Charge .env et ignore les variables inconnues
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env.app", extra="ignore")
 
-    # Valeurs par défaut (pas "required")
-    app_name: str = "Auth Service API"
-    env: str = "dev"
-    host: str = "0.0.0.0"
-    port: int = 8000
-    jwt_algorithm: str = "HS256"
-    access_token_expire_minutes: int = 30
+    app_name: str = Field("Auth Service API", alias="APP_NAME")
+    env: str = Field("dev", alias="ENV")
+    host: str = Field("0.0.0.0", alias="HOST")
+    port: int = Field(8000, alias="PORT")
+    jwt_algorithm: str = Field("HS256", alias="JWT_ALGORITHM")
+    access_token_expire_minutes: int = Field(30, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
 
-    # Required (doivent venir du .env)
-    database_url: str  # lit DATABASE_URL
-    jwt_secret: str    # lit JWT_SECRET
+    database_url: str = Field(..., alias="DATABASE_URL")
+    jwt_secret: str = Field(..., alias="JWT_SECRET")
 
 settings = Settings()
