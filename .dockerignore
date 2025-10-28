@@ -1,0 +1,56 @@
+# --- Python build artifacts ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+
+# --- Virtual environments ---
+.venv/
+env/
+venv/
+
+# --- Byte-compiled and cache files ---
+*.egg-info/
+.eggs/
+*.egg
+.installed.cfg
+
+# --- Test and coverage ---
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.mypy_cache/
+.cache/
+
+# --- Version control ---
+.git/
+.gitignore
+
+# --- IDE / editor files ---
+.vscode/
+.idea/
+*.swp
+
+# --- Environment files ---
+.env
+.env.*
+*.env.*
+
+# --- Docker specific ---
+Dockerfile.*
+docker-compose.*
+db_data/
+__MACOSX
+
+# --- Build outputs / distributions ---
+build/
+dist/
+*.tar.gz
+*.whl
+
+# --- System / OS files ---
+.DS_Store
+Thumbs.db
