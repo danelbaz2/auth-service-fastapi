@@ -1,4 +1,5 @@
-from sqlalchemy import create_engine
-from app.core.config import settings
+import os
+from sqlalchemy import create_engine,text
+from sqlalchemy.exc import OperationalError
 
-engine = create_engine(settings.database_url, pool_pre_ping=True)
+engine = create_engine(os.environ["DATABASE_URL"], pool_pre_ping=True)
