@@ -14,7 +14,7 @@
 | Column | Type | Description |
 |---------|------|-------------|
 | id | int | Primary key |
-| name | string | Unique (`guest`, `viewer`, `user`, `editor`, `admin`) |
+| name | string | Unique (`admin`, `editor`, `user`, `viewer`, `guest`) |
 
 ### documents
 | Column | Type | Description |
