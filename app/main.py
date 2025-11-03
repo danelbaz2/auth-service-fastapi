@@ -1,13 +1,21 @@
 from fastapi import FastAPI
-from app.core.config import settings
-from app.api.routes.auth import router
-from app.models.user import Base
-from app.db import engine
+from app.api.routes import auth, health
 
-app = FastAPI(title="Auth Service (MVP)")
+app = FastAPI(
+    title="Auth Service API",
+    version="1.0.0",
+    description=(
+        "Authentication microservice (**FastAPI + SQLAlchemy + Alembic + Postgres**).\n\n"
+        "Provides user registration and (soon) login with **JWT**.\n"
+        "Uses **Pydantic Settings** for configuration and **Argon2** for password hashing."
+    ),
+)
 
-app.include_router(router)
+TAGS_METADATA = [
+    {"name": "Health", "description": "Readiness/liveness"},
+    {"name": "POST", "description": "Register, login, and auth flows."},
+    ]
+app.openapi_tags = TAGS_METADATA
 
-@app.get("/health")
-def health():
-    return {"status": "ok", "env": settings.env}
+app.include_router(auth.router)
+app.include_router(health.router)

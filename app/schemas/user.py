@@ -1,3 +1,4 @@
+#Schemas for Swagger UI
 from __future__ import annotations
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from enum import StrEnum
@@ -36,7 +37,7 @@ class RoleOut(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-class UserOut(UserBase):
+class UserResponse(UserBase):
     user_id: int
     email: EmailStr
     role: int

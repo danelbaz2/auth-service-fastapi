@@ -1,34 +1,42 @@
+# alembic/env.py
 from logging.config import fileConfig
-from sqlalchemy import create_engine # DB connection when running migrations online
+from sqlalchemy import create_engine, pool
 from alembic import context
 
-from app.core.config import settings # importing app configuration
-from app.models.user import Base  # contains Base.metadata
+# 1) Load app settings + metadata
+from app.core.config import settings
+from app.models.user import Base  # <-- if you have more model modules, import them too
+target_metadata = Base.metadata
 
-config = context.config 
-
+# 2) Alembic config
+config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
-
-# When the DB is offline, Alembic doesn’t apply changes — it only generates SQL scripts.
 def run_migrations_offline() -> None:
-    url = settings.database_url # get database URL from settings
+    """Run migrations in 'offline' mode (no DB connection)."""
+    url = settings.database_url
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,      # detect type changes
+        compare_server_default=True,
     )
     with context.begin_transaction():
         context.run_migrations()
 
-# When the DB is online, Alembic actually connects and applies the schema changes.
 def run_migrations_online() -> None:
-    connectable = create_engine(settings.database_url, pool_pre_ping=True) # checking connection is alive before using it
-    with connectable.connect() as connection: # open the DB connection
-        context.configure(connection=connection, target_metadata=target_metadata)
+    """Run migrations in 'online' mode (with a DB connection)."""
+    connectable = create_engine(settings.database_url, poolclass=pool.NullPool, future=True)
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            compare_type=True,
+            compare_server_default=True,
+        )
         with context.begin_transaction():
             context.run_migrations()
 
