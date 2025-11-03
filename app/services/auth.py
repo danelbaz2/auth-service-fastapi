@@ -1,10 +1,10 @@
 from fastapi import HTTPException
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-
 from app.models.user import User
+from app.models.user import Role
 from app.schemas.user import UserCreate
+from app.services.security import hash_password
 
 def create_user(db: Session, payload: UserCreate) -> User:
     raise_if_hash_not_ready = False
@@ -14,16 +14,15 @@ def create_user(db: Session, payload: UserCreate) -> User:
     # 3) Créer l'objet ORM
     user = User(
         email=payload.email,
-        password_hash="REPLACE_WITH_REAL_HASH",  # replace via hash_password()
-        status=payload.status.value
+        password_hash=hash_password(payload.password),
+        role=5,   # default giving 'guest' role
     )
-
-    # 4) Persister
 
     try:
         db.add(user)
         db.commit()
     except IntegrityError:
-        raise HTTPException(400, "Email already registered")
-    db.refresh(user)
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Email already registered")
+    db.refresh(user) 
     return user
