@@ -1,8 +1,0 @@
-APP_NAME=Auth Service API
-ENV=dev
-HOST=0.0.0.0
-PORT=8000
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-DATABASE_URL=postgresql+psycopg://user:pass@db:5432/auth_db
-JWT_SECRET=super_secret_key_12345

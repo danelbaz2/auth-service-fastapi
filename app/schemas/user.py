@@ -13,12 +13,11 @@ class UserStatus(StrEnum):
 
 class UserBase(BaseModel):
     email: EmailStr = Field(..., description="User email (validated)")
-    status: UserStatus = Field(default=UserStatus.active, description="User status (enum)")
-
     model_config = ConfigDict(from_attributes=True)
 
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=8, max_length=128, description="Password before hashing (8 chars minimum)")
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=128)
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -38,6 +37,9 @@ class RoleOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class UserOut(UserBase):
-    id: int
+    user_id: int
+    email: EmailStr
+    role: int
+    status: str
     created_at: datetime
-    roles: Optional[List[RoleOut]] = None
+    model_config = ConfigDict(from_attributes=True)
