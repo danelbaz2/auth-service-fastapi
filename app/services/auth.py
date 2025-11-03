@@ -1,28 +1,20 @@
-from fastapi import HTTPException
+# app/services/auth.py
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 from app.models.user import User
-from app.models.user import Role
-from app.schemas.user import UserCreate
 from app.services.security import hash_password
+from app.schemas.user import UserCreate
 
-def create_user(db: Session, payload: UserCreate) -> User:
-    raise_if_hash_not_ready = False
-    if raise_if_hash_not_ready:
-        raise HTTPException(status_code=500, detail="Password hashing not configured")
+def create_user(db: Session, user_in: UserCreate):
+    existing_user = db.query(User).filter(User.email == user_in.email).first()
+    if existing_user:
+        raise ValueError("Email already registered")
 
-    # 3) Créer l'objet ORM
-    user = User(
-        email=payload.email,
-        password_hash=hash_password(payload.password),
-        role=5,   # default giving 'guest' role
+    new_user = User(
+        email=user_in.email,
+        password_hash=hash_password(user_in.password),
+        role=5,  # guest by default
     )
-
-    try:
-        db.add(user)
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code=409, detail="Email already registered")
-    db.refresh(user) 
-    return user
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
